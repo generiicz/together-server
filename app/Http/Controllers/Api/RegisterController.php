@@ -95,6 +95,32 @@ class RegisterController extends Controller
      *       @SWG\Response(response=400, description="Bad request"),
      *     )
      */
+    public function login(Request $request)
+    {
+        $validator = $this->getValidationFactory()->make($request->all(), [
+            'email' => 'required|email|max:255',
+            'password' => 'required|max:30|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $user = User::query()->where('email', $request->input('email'))->first();
+
+        if (!$user) {
+            return $this->sendJsonErrors('User not found', 404);
+        }
+
+        if ($user->password != $request->input('password')) {
+            return $this->validationError('Password is invalid', 403);
+        }
+
+        return $this->sendJson([
+                'user' => $user,
+                'token' => $user->createToken('auth' . $user->email)->accessToken]
+        );
+    }
 
     /**
      * @SWG\Post(

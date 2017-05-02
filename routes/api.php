@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('api_auth')->get('/user', 'Api\UserController@index');
+Route::post('/auth/registration', 'Api\RegisterController@registration');
+
+//Route::middleware('api')->get('/user', function (Request $request) {
+//    return response()->json(['OK'=>200]);
+//});

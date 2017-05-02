@@ -42,3 +42,13 @@
  * @SWG\Response(response="Invalidation", description="`VALIDATION_ERROR`"),
  * @SWG\Response(response="UnexpectedError", description="`UNEXPECTED_ERROR`"),
  */
+
+
+/**
+ * @SWG\SecurityScheme(
+ *   securityDefinition="X-Api-Token",
+ *   type="apiKey",
+ *   in="header",
+ *   name="X-Api-Token"
+ * )
+ */

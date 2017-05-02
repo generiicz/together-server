@@ -3,9 +3,9 @@
     "info": {
         "title": "Together Api Doc",
         "description": "Api Docs",
-        "version": "0.1.0"
+        "version": "0.1."
     },
-    "basePath": "/app",
+    "basePath": "/api",
     "schemes": [
         "http"
     ],
@@ -15,8 +15,178 @@
     "produces": [
         "application/json"
     ],
-    "paths": {},
+    "paths": {
+        "/auth/registration": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "User registration",
+                "description": "Register user with token",
+                "operationId": "registration",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Expertise item to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserAuth"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "User login",
+                "description": "Login user by password",
+                "operationId": "login",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Expertise item to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserAuth"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/auth/social": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Social User login",
+                "description": "Social Login user by password",
+                "operationId": "Social login",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Expertise item to create",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AuthSoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "User information",
+                "description": "Get user",
+                "operationId": "getUserInfo",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update User information",
+                "description": "Update user",
+                "operationId": "updateUserInfo",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        }
+    },
     "definitions": {
+        "UserAuth": {
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "AuthSoc": {
+            "required": [
+                "type",
+                "token"
+            ],
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserUpdate": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "file"
+                }
+            }
+        },
         "Id": {
             "properties": {
                 "id": {
@@ -118,6 +288,11 @@
     "securityDefinitions": {
         "basic": {
             "type": "basic"
+        },
+        "X-Api-Token": {
+            "type": "apiKey",
+            "name": "X-Api-Token",
+            "in": "header"
         }
     }
 }

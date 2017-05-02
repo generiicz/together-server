@@ -1,7 +1,13 @@
 <?php
-define("SWAGGER_API_VERSION", '0.1.0');
-define("SWAGGER_API_BASEPATH", '/' . trim(config('app.endpoints_prefix'), '/'));
-define("SWAGGER_API_TITLE", env('API_TITLE', 'Together Api Doc'));
+if(!defined('SWAGGER_API_VERSION')) {
+    define("SWAGGER_API_VERSION", '0.1.');
+}
+if(!defined('SWAGGER_API_BASEPATH')){
+    define("SWAGGER_API_BASEPATH", '/api');
+}
+if(!defined('SWAGGER_API_TITLE')){
+    define("SWAGGER_API_TITLE", env('API_TITLE', 'Together Api Doc'));
+}
 
 return [
 

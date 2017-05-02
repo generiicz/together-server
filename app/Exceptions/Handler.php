@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -47,7 +48,44 @@ class Handler extends ExceptionHandler
         return parent::render($request, $exception);
     }
 
+
+
     /**
+     * Prepare response containing exception render.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Exception $e
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function prepareResponse($request, Exception $e)
+    {
+        if (!$request->expectsJson() && !preg_match('/^\/api\//', $request->getPathInfo())) {
+            if ($this->isHttpException($e)) {
+                return $this->toIlluminateResponse($this->renderHttpException($e), $e);
+            } else {
+                return $this->toIlluminateResponse($this->convertExceptionToResponse($e), $e);
+            }
+        }
+
+        $status = $e->getCode();
+        $message = $e->getMessage();
+        $response = [
+            'error' => $message ?: 'Sorry, something went wrong.',
+            'code' => $status ?: 500
+        ];
+
+        // If the app is in debug mode
+        if (config('app.debug'))
+        {
+            $response['exception'] = get_class($e);
+            $response['trace'] = $e->getTrace();
+        }
+
+        return response()->json($response, Response::HTTP_OK);
+
+    }
+
+            /**
      * Convert an authentication exception into an unauthenticated response.
      *
      * @param  \Illuminate\Http\Request  $request

@@ -19,7 +19,7 @@ class ApiAuthenticate
     {
         $token = $request->header('X-Api-Token');
         if(!$request->header('X-Api-Token')){
-            return response()->json(['error' => 'Token Invalid.'], 403);
+            return response()->json(Response::prepareErrorResponse( 'Token Invalid.', 403));
         }
 
         /** @var Token $tokenModel */

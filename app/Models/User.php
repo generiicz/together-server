@@ -5,6 +5,7 @@ namespace App\Models;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Intervention\Image\ImageManager as Image;
 
 class User extends Authenticatable
 {
@@ -36,4 +37,13 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token', 'updated_at', 'status'
     ];
+
+    public function saveCoverByUrl($url)
+    {
+        $filename = basename($url);
+        $this->cover = 'app/user_avatars/' . $filename;
+
+        $manager = new Image();
+        $manager->make($url)->save(storage_path($this->cover));
+    }
 }

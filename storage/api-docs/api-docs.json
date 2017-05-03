@@ -28,7 +28,7 @@
                     {
                         "name": "user",
                         "in": "body",
-                        "description": "Expertise item to create",
+                        "description": "Post Data",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/UserAuth"
@@ -57,7 +57,7 @@
                     {
                         "name": "user",
                         "in": "body",
-                        "description": "Expertise item to create",
+                        "description": "Post Data",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/UserAuth"
@@ -74,22 +74,55 @@
                 }
             }
         },
-        "/auth/social": {
+        "/auth/tw": {
             "post": {
                 "tags": [
                     "auth"
                 ],
-                "summary": "Social User login",
-                "description": "Social Login user by password",
-                "operationId": "Social login",
+                "summary": "Social User Twitter auth",
+                "description": "Social user Twitter auth",
+                "operationId": "Social Twitter auth",
                 "parameters": [
                     {
                         "name": "user",
                         "in": "body",
-                        "description": "Expertise item to create",
+                        "description": "Post Data",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/AuthSoc"
+                            "$ref": "#/definitions/AuthTw"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/auth/fb": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Social User Facebook auth",
+                "description": "Social user Facebook auth",
+                "operationId": "Social Facebook auth",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Post Data",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "access_token": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
                 ],
@@ -163,16 +196,16 @@
                 }
             }
         },
-        "AuthSoc": {
+        "AuthTw": {
             "required": [
-                "type",
-                "token"
+                "access_token",
+                "access_token_secret"
             ],
             "properties": {
-                "type": {
+                "access_token": {
                     "type": "string"
                 },
-                "token": {
+                "access_token_secret": {
                     "type": "string"
                 }
             }

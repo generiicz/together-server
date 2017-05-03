@@ -6,8 +6,10 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "abraham/twitteroauth": "^0.7.2",
         "barryvdh/laravel-debugbar": "^2.3",
         "darkaonline/l5-swagger": "~4.0",
+        "intervention/image": "^2.3",
         "laravel/framework": "5.4.*",
         "laravel/passport": "^2.0",
         "laravel/socialite": "^3.0",

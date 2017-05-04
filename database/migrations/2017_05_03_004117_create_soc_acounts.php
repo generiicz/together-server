@@ -15,7 +15,7 @@ class CreateSocAcounts extends Migration
     {
         Schema::create('tw_users', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
-            $table->string('token', 64);
+            $table->string('token');
             $table->unsignedInteger('user_id');
             $table->timestamps();
         });
@@ -26,7 +26,7 @@ class CreateSocAcounts extends Migration
 
         Schema::create('fb_users', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
-            $table->string('token', 64);
+            $table->string('token');
             $table->unsignedInteger('user_id');
             $table->timestamps();
         });

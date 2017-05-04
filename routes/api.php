@@ -15,8 +15,7 @@ use Illuminate\Http\Request;
 
 Route::middleware('api_auth')->get('/user', 'Api\UserController@index');
 Route::post('/auth/login', 'Api\RegisterController@login');
-Route::post('/auth/tw', 'Api\RegisterController@twAuth');
-Route::post('/auth/fb', 'Api\RegisterController@fbAuth');
+Route::post('/auth/soc', 'Api\RegisterController@socAuth');
 Route::post('/auth/registration', 'Api\RegisterController@registration');
 
 //Route::middleware('api')->get('/user', function (Request $request) {

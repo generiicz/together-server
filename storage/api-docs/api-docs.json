@@ -74,14 +74,14 @@
                 }
             }
         },
-        "/auth/tw": {
+        "/auth/soc": {
             "post": {
                 "tags": [
                     "auth"
                 ],
-                "summary": "Social User Twitter auth",
-                "description": "Social user Twitter auth",
-                "operationId": "Social Twitter auth",
+                "summary": "Social User Twitter/Facebook auth",
+                "description": "Social user Twitter/Facebook auth",
+                "operationId": "Social Twitter/Facebook auth",
                 "parameters": [
                     {
                         "name": "user",
@@ -89,40 +89,7 @@
                         "description": "Post Data",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/AuthTw"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    }
-                }
-            }
-        },
-        "/auth/fb": {
-            "post": {
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Social User Facebook auth",
-                "description": "Social user Facebook auth",
-                "operationId": "Social Facebook auth",
-                "parameters": [
-                    {
-                        "name": "user",
-                        "in": "body",
-                        "description": "Post Data",
-                        "required": true,
-                        "schema": {
-                            "properties": {
-                                "access_token": {
-                                    "type": "string"
-                                }
-                            }
+                            "$ref": "#/definitions/AuthSoc"
                         }
                     }
                 ],
@@ -196,16 +163,20 @@
                 }
             }
         },
-        "AuthTw": {
+        "AuthSoc": {
             "required": [
-                "access_token",
-                "access_token_secret"
+                "type",
+                "access_token"
             ],
             "properties": {
-                "access_token": {
-                    "type": "string"
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "fb",
+                        "tw"
+                    ]
                 },
-                "access_token_secret": {
+                "access_token": {
                     "type": "string"
                 }
             }

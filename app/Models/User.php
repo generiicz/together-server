@@ -41,7 +41,9 @@ class User extends Authenticatable
     public function saveCoverByUrl($url)
     {
         $filename = basename($url);
-        $this->cover = 'app/user_avatars/' . $filename;
+        $ext = pathinfo($url, PATHINFO_EXTENSION);
+        $this->cover = 'app/user_avatars/';
+        $this->cover .= ($ext) ? $filename : uniqid(time()) . '.jpg';
 
         $manager = new Image();
         $manager->make($url)->save(storage_path($this->cover));

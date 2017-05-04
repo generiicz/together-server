@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\FbUser;
 use App\Models\TwUser;
 use Illuminate\Support\Facades\Log;
 use Socialite;
@@ -119,24 +120,24 @@ class RegisterController extends Controller
 
 
     /**
-     *       @SWG\Definition(
-     *            definition="AuthTw",
-     *            required={"access_token", "access_token_secret"},
+     * @SWG\Definition(
+     *            definition="AuthSoc",
+     *            required={"type", "access_token"},
+     * 			@SWG\Property(property="type", type="string", enum={"fb", "tw"}),
      * 			@SWG\Property(property="access_token", type="string"),
-     * 			@SWG\Property(property="access_token_secret", type="string"),
      *        )
      */
 
     /**
      * @SWG\Post(
-     *      path="/auth/tw",
-     *      operationId="Social Twitter auth",
+     *      path="/auth/soc",
+     *      operationId="Social Twitter/Facebook auth",
      *      tags={"auth"},
-     *      summary="Social User Twitter auth",
-     *      description="Social user Twitter auth",
+     *      summary="Social User Twitter/Facebook auth",
+     *      description="Social user Twitter/Facebook auth",
      *  @SWG\Parameter(
      *     name="user", in="body", required=true, description="Post Data",
-     *     @SWG\Schema(ref="#/definitions/AuthTw"),
+     *     @SWG\Schema(ref="#/definitions/AuthSoc"),
      *   ),
      *      @SWG\Response(
      *          response=200,
@@ -145,40 +146,51 @@ class RegisterController extends Controller
      *       @SWG\Response(response=400, description="Bad request"),
      *     )
      */
-    public function twAuth(Request $request)
+    public function socAuth(Request $request)
     {
         $validator = $this->getValidationFactory()->make($request->all(), [
-            'access_token' => 'required',
-            'access_token_secret' => 'required',
+            'access_token' => 'required|string',
+            'type' => 'required|size:2',
         ]);
 
         if ($validator->fails()) {
             return $this->validationError($validator->errors());
         }
 
-        $accessToken = $request->input('access_token');
-        $accessTokenSecret = $request->input('access_token_secret');
-        Log::info('Auth with tw access_token:' . $accessToken . ' secret: ' . $accessTokenSecret);
-        $connection = new TwitterOAuth(env('TW_CLIENT_ID'), env('TW_CLIENT_SECRET'), $accessToken, $accessTokenSecret);
+        $input = $request->all();
+        if (!in_array($input['type'], ['fb', 'tw'])) {
+            return $this->sendJsonErrors('Invalid Type', 403);
+        }
+        if ($input['type'] == 'tw') {
+            return $this->twAuth($input['access_token']);
+        }
+
+        return $this->fbAuth($input['access_token']);
+    }
+
+    public function twAuth($accessToken)
+    {
+        Log::info('Auth with tw access_token:' . $accessToken);
+        $connection = new TwitterOAuth(env('TW_CLIENT_ID'), env('TW_CLIENT_SECRET'), $accessToken, env('TW_CLIENT_SECRET'));
         $content = $connection->get("account/verify_credentials");
 
-        if(!isset($content->name, $content->id)){
+        if (!isset($content->name, $content->id)) {
             return $this->sendJsonErrors('Invalid Soc Token', 403);
         }
 
         $socUser = TwUser::query()->find($content->id);
-        if(isset($socUser->user)) {
+        if (isset($socUser->user)) {
             return $this->sendJson([
-                'user' => $socUser->user,
-                'token' => $socUser->user->createToken('auth' . $socUser->user->email)->accessToken]
+                    'user' => $socUser->user,
+                    'token' => $socUser->user->createToken('auth' . $socUser->user->email)->accessToken]
             );
         }
 
         $user = new User();
         $user->name = $content->name;
-        $user->email = $content->id . '@twitter.com';
+        $user->email = $content->id . '@tw.com';
         $user->password = '';
-        if(isset($content->profile_image_url) && $content->profile_image_url) {
+        if (isset($content->profile_image_url) && $content->profile_image_url) {
             $user->saveCoverByUrl($content->profile_image_url);
         }
         if (!$user->save()) {
@@ -186,12 +198,11 @@ class RegisterController extends Controller
         }
 
         $socUser = new TwUser();
-        $socUser->fill(['id' => $content->id, 'token' => $accessTokenSecret]);
+        $socUser->fill(['id' => (int) $content->id, 'token' => $accessToken]);
         $socUser->user_id = $user->id;
-        if(!$socUser->save()) {
+        if (!$socUser->save()) {
             return $this->sendJsonErrors('Account not save. DB error');
         }
-
 
         return $this->sendJson([
                 'user' => $user,
@@ -199,58 +210,50 @@ class RegisterController extends Controller
         );
     }
 
-    /**
-     * @SWG\Post(
-     *      path="/auth/fb",
-     *      operationId="Social Facebook auth",
-     *      tags={"auth"},
-     *      summary="Social User Facebook auth",
-     *      description="Social user Facebook auth",
-     *  @SWG\Parameter(
-     *     name="user", in="body", required=true, description="Post Data",
-     *     @SWG\Schema(
-     *          @SWG\Property(property="access_token", type="string")
-     *      ),
-     *   ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation"
-     *       ),
-     *       @SWG\Response(response=400, description="Bad request"),
-     *     )
-     */
-    public function fbAuth(Request $request)
+
+    public function fbAuth($accessToken)
     {
-        $validator = $this->getValidationFactory()->make($request->all(), [
-            'type' => 'required|size:2|string',
-            'token' => 'required',
-        ]);
 
-        if ($validator->fails()) {
-            return $this->validationError($validator->errors());
+        $driver = Socialite::driver('facebook');
+        $driver = $driver->fields(['name', 'email', 'gender', 'verified', 'link', 'age_range']);
+        try {
+            $content = $driver->userFromToken($accessToken);
+        } catch (\Exception $exception) {
+            return $this->sendJsonErrors('Invalid Soc Token. Fb api error', 500);
         }
 
-        if (!in_array($request->input('type'), ['fb', 'tw'])) {
-            return $this->sendJsonErrors('Invalid Type', 403);
-        }
-        $connection = new TwitterOAuth(env('TW_CLIENT_ID'), env('TW_CLIENT_SECRET'), '94858324-JzVVc6KYnFPwrnGK5LuN6B4O0qEzu11uBQquCByVd', 'yKrwj2SpaLHrMiEKhOKADQiqO2yDCeRtyZQxAjWlgUdXb');
-        $content = $connection->get("account/verify_credentials");
-        die(var_dump( $content,__METHOD__, __FILE__, __DIR__));
-        try{
-            $user = Socialite::driver('twitter')->userFromToken($request->input('token'));
-            die(var_dump( $user,__METHOD__, __FILE__, __DIR__));
-        } catch (\Exception $exception){
-            die(var_dump( $exception,__METHOD__, __FILE__, __DIR__));
+        if (!isset($content->name, $content->id)) {
             return $this->sendJsonErrors('Invalid Soc Token', 403);
         }
 
-        die(var_dump( $user,__METHOD__, __FILE__, __DIR__));
-
-        if (!$user) {
-            return $this->sendJsonErrors('User not found', 404);
+        $socUser = FbUser::query()->find((int) $content->id);
+        if (isset($socUser->user)) {
+            return $this->sendJson([
+                    'user' => $socUser->user,
+                    'token' => $socUser->user->createToken('auth' . $socUser->user->email)->accessToken]
+            );
         }
-        if ($user->password != $request->input('password')) {
-            return $this->validationError('Password is invalid', 403);
+
+
+        $user = new User();
+        $user->name = $content->name;
+        $user->email = (isset($content->user['email']) && $content->user['email']) ? $content->user['email'] : $content->id . '@fb.com';
+        $user->sex = (isset($content->user['gender']) && $content->user['gender']) ? $content->user['gender'] : User::ALIEN;
+        $user->age = (isset($content->user['age_range']['min']) && $content->user['age_range']['min']) ? $content->user['age_range']['min'] : User::DEF_AGE;
+        $user->password = '';
+        $avatar = isset($content->avatar_original) ? $content->avatar_original : $content->avatar;
+        if ($avatar) {
+            $user->saveCoverByUrl($avatar);
+        }
+        if (!$user->save()) {
+            return $this->sendJsonErrors('User not save');
+        }
+
+        $socUser = new FbUser();
+        $socUser->fill(['id' => $content->id, 'token' => $accessToken]);
+        $socUser->user_id = $user->id;
+        if (!$socUser->save()) {
+            return $this->sendJsonErrors('Account not save. DB error');
         }
 
         return $this->sendJson([

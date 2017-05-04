@@ -171,7 +171,7 @@ class RegisterController extends Controller
     public function twAuth($accessToken)
     {
         Log::info('Auth with tw access_token:' . $accessToken);
-        $connection = new TwitterOAuth(env('TW_CLIENT_ID'), env('TW_CLIENT_SECRET'), $accessToken, env('TW_CLIENT_SECRET'));
+        $connection = new TwitterOAuth(env('TW_CLIENT_ID'), env('TW_CLIENT_SECRET'), $accessToken, env('TW_YOUR_SECRET'));
         $content = $connection->get("account/verify_credentials");
 
         if (!isset($content->name, $content->id)) {

@@ -7,6 +7,7 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Intervention\Image\ImageManager as Image;
+use Illuminate\Http\File;
 
 class User extends Authenticatable
 {
@@ -48,6 +49,7 @@ class User extends Authenticatable
         $cover = ($ext) ? $filename : md5(uniqid(time(), true)) . '.jpg';
         $this->cover = $cover;
         $manager = new Image();
+        Storage::makeDirectory(self::COVER_FOLDER);
         $manager->make($url)->save(storage_path('app/public/' . $this->getRealStorageCoverPath($cover)));
     }
 

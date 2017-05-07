@@ -50,6 +50,10 @@ class UserController extends Controller
      *      summary="Update User information",
      *      description="Update user",
      *      security={{"X-Api-Token":{}}},
+     *      @SWG\Parameter(
+     *          name="userUpdate", in="body", required=true, description="User Post Data",
+     *          @SWG\Schema(ref="#/definitions/UserUpdate"),
+     *      ),
      *      @SWG\Response(
      *          response=200,
      *          description="successful operation"
@@ -58,4 +62,34 @@ class UserController extends Controller
      *     )
      *
      */
+
+    public function update(Request $request)
+    {
+        $validator = $this->getValidationFactory()->make($request->all(), [
+            'name' => 'required_without:cover|string|max:25|min:3',
+            'cover' => 'required_without:name|file|mimes:jpeg,bmp,png,jpg',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        /** @var User $user */
+        $user = $request->user();
+        if ($request->hasFile('cover')) {
+            $user->saveCoverByFile($request->file('cover'));
+        }
+
+        if($request->input('name')) {
+            $user->name = $request->input('name');
+        }
+
+        if (!$user->save()) {
+            return $this->sendJsonErrors('Account not save. DB error');
+        }
+
+        return $this->sendJson([
+            'user' => $user
+        ]);
+    }
 }

@@ -132,6 +132,17 @@
                 "summary": "Update User information",
                 "description": "Update user",
                 "operationId": "updateUserInfo",
+                "parameters": [
+                    {
+                        "name": "userUpdate",
+                        "in": "body",
+                        "description": "User Post Data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserUpdate"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation"

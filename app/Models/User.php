@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -9,6 +10,8 @@ use Intervention\Image\ImageManager as Image;
 
 class User extends Authenticatable
 {
+    const COVER_FOLDER = 'user_avatars';
+
     const ACTIVE = 1;
     const BAN = 0;
 
@@ -42,10 +45,34 @@ class User extends Authenticatable
     {
         $filename = basename($url);
         $ext = pathinfo($url, PATHINFO_EXTENSION);
-        $this->cover = 'app/user_avatars/';
-        $this->cover .= ($ext) ? $filename : uniqid(time()) . '.jpg';
-
+        $cover = ($ext) ? $filename : md5(uniqid(time(), true)) . '.jpg';
+        $this->cover = $cover;
         $manager = new Image();
-        $manager->make($url)->save(storage_path($this->cover));
+        $manager->make($url)->save(storage_path('app/public/' . $this->getRealStorageCoverPath($cover)));
+    }
+
+    public function getCoverAttribute($cover)
+    {
+        if(Storage::exists($this->getRealStorageCoverPath($cover))) {
+            return Storage::url($this->getRealStorageCoverPath($cover));
+        }
+
+        return '';
+    }
+
+    /**
+     * @param  \Illuminate\Http\UploadedFile|array|null $file
+     */
+    public function saveCoverByFile($file)
+    {
+        $fileName = md5(uniqid(time(), true)) . '.' . $file->getClientOriginalExtension();
+        $this->cover = $fileName;
+        Storage::putFileAs(self::COVER_FOLDER, $file, $fileName);
+    }
+
+    private function getRealStorageCoverPath($cover = '')
+    {
+        $cover = $cover ?: $this->cover;
+        return self::COVER_FOLDER . '/' . $cover;
     }
 }

@@ -135,10 +135,10 @@ class RegisterController extends Controller
      *      tags={"auth"},
      *      summary="Social User Twitter/Facebook auth",
      *      description="Social user Twitter/Facebook auth",
-     *  @SWG\Parameter(
-     *     name="user", in="body", required=true, description="Post Data",
-     *     @SWG\Schema(ref="#/definitions/AuthSoc"),
-     *   ),
+     *      @SWG\Parameter(
+     *          name="user", in="body", required=true, description="Post Data",
+     *          @SWG\Schema(ref="#/definitions/AuthSoc"),
+     *      ),
      *      @SWG\Response(
      *          response=200,
      *          description="successful operation"

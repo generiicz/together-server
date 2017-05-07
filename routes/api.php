@@ -13,10 +13,14 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('api_auth')->get('/user', 'Api\UserController@index');
 Route::post('/auth/login', 'Api\RegisterController@login');
 Route::post('/auth/soc', 'Api\RegisterController@socAuth');
 Route::post('/auth/registration', 'Api\RegisterController@registration');
+
+Route::group(['middleware' => 'api_auth', 'prefix' => 'user'], function () {
+    Route::get('/', 'Api\UserController@index');
+    Route::post('/', 'Api\UserController@update');
+});
 
 //Route::middleware('api')->get('/user', function (Request $request) {
 //    return response()->json(['OK'=>200]);

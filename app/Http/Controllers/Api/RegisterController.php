@@ -62,14 +62,14 @@ class RegisterController extends Controller
 
         $user = new User();
         $user->fill($request->only(['email', 'password']));
-        $user->name = uniqid('User:');
+        $user->name = uniqid('User:', true);
         if (!$user->save()) {
             return $this->sendJsonErrors('User not save');
         }
 
         return $this->sendJson([
                 'user' => $user,
-                'token' => $user->createToken('auth' . $user->email)->accessToken]
+                'token' => $user->createToken('auth' . $user->email)->token->id]
         );
     }
 
@@ -114,7 +114,7 @@ class RegisterController extends Controller
 
         return $this->sendJson([
                 'user' => $user,
-                'token' => $user->createToken('auth' . $user->email)->accessToken]
+                'token' => $user->createToken('auth' . $user->email)->token->id]
         );
     }
 
@@ -182,7 +182,7 @@ class RegisterController extends Controller
         if (isset($socUser->user)) {
             return $this->sendJson([
                     'user' => $socUser->user,
-                    'token' => $socUser->user->createToken('auth' . $socUser->user->email)->accessToken]
+                    'token' => $socUser->user->createToken('auth' . $socUser->user->email)->token->id]
             );
         }
 
@@ -198,7 +198,7 @@ class RegisterController extends Controller
         }
 
         $socUser = new TwUser();
-        $socUser->fill(['id' => (int) $content->id, 'token' => $accessToken]);
+        $socUser->fill(['id' => (int)$content->id, 'token' => $accessToken]);
         $socUser->user_id = $user->id;
         if (!$socUser->save()) {
             return $this->sendJsonErrors('Account not save. DB error');
@@ -206,7 +206,7 @@ class RegisterController extends Controller
 
         return $this->sendJson([
                 'user' => $user,
-                'token' => $user->createToken('auth' . $user->email)->accessToken]
+                'token' =>  $user->createToken('auth' . $user->email)->token->id]
         );
     }
 
@@ -226,11 +226,11 @@ class RegisterController extends Controller
             return $this->sendJsonErrors('Invalid Soc Token', 403);
         }
 
-        $socUser = FbUser::query()->find((int) $content->id);
+        $socUser = FbUser::query()->find((int)$content->id);
         if (isset($socUser->user)) {
             return $this->sendJson([
                     'user' => $socUser->user,
-                    'token' => $socUser->user->createToken('auth' . $socUser->user->email)->accessToken]
+                    'token' => $socUser->user->createToken('auth' . $socUser->user->email)->token->id]
             );
         }
 
@@ -258,7 +258,7 @@ class RegisterController extends Controller
 
         return $this->sendJson([
                 'user' => $user,
-                'token' => $user->createToken('auth' . $user->email)->accessToken]
+                'token' =>  $user->createToken('auth' . $user->email)->token->id]
         );
     }
 }

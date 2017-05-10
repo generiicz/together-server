@@ -9,6 +9,7 @@
         "abraham/twitteroauth": "^0.7.2",
         "barryvdh/laravel-debugbar": "^2.3",
         "darkaonline/l5-swagger": "~4.0",
+        "doctrine/dbal": "^2.5",
         "intervention/image": "^2.3",
         "laravel/framework": "5.4.*",
         "laravel/passport": "^2.0",

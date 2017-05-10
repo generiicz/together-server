@@ -1,13 +1,4 @@
 <?php
-if(!defined('SWAGGER_API_VERSION')) {
-    define("SWAGGER_API_VERSION", '0.1.');
-}
-if(!defined('SWAGGER_API_BASEPATH')){
-    define("SWAGGER_API_BASEPATH", '/api');
-}
-if(!defined('SWAGGER_API_TITLE')){
-    define("SWAGGER_API_TITLE", env('API_TITLE', 'Together Api Doc'));
-}
 
 return [
 

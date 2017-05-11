@@ -10,3 +10,5 @@ Homestead.yaml
 /.vagrant/
 *.iml
 *.log
+/resources/views/vendor
+/resources/assets/js/components/passport/

@@ -2,11 +2,37 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\User;
+use App\Models\Article;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+
+    /**
+     * @SWG\Get(
+     *      path="/post/all",
+     *      operationId="Get All posts",
+     *      tags={"post"},
+     *      summary="Get All Posts",
+     *      description="Get All Posts",
+     *      security={{"X-Api-Token":{}}},
+     *      @SWG\Response(
+     *          response=200,
+     *          description="successful operation"
+     *       ),
+     *       @SWG\Response(response=400, description="Bad request"),
+     *     )
+     *
+     */
+    public function index(Request $request)
+    {
+        $postCollection = Category::query()->get();
+
+        return $this->sendJson([
+            'posts' => $postCollection
+        ]);
+    }
 
     /**
      * @SWG\Get(
@@ -27,10 +53,15 @@ class PostController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request, $id)
+    public function one(Request $request, $id)
     {
+        $post = Article::query()->find($id);
+        if (!$post) {
+            return $this->sendJsonErrors('Invalid post id', 404);
+        }
+
         return $this->sendJson([
-            'UserSeeder' => $request->user()
+            'post' => $post
         ]);
     }
 
@@ -77,7 +108,18 @@ class PostController extends Controller
     public function update(Request $request)
     {
         $validator = $this->getValidationFactory()->make($request->all(), [
-            'name' => 'required_without:cover|string|max:25|min:3',
+            'title' => 'required|string|max:25|min:3',
+            'info'  => 'string|max:25|min:3',
+            'date_from'  => 'date|required',
+            'date_to'  => 'date|required',
+            'time_from'  => 'time|required',
+            'time_to'  => 'time|required',
+            'address'  => 'string|required',
+            'category_id'  => 'required',
+            'is_private'  => 'bool',
+            'number_extra_tickets'  => 'required',
+            'lat'  => 'required',
+            'lng'  => 'required',
             'cover' => 'required_without:name|file|mimes:jpeg,bmp,png,jpg',
         ]);
 
@@ -85,22 +127,19 @@ class PostController extends Controller
             return $this->validationError($validator->errors());
         }
 
-        /** @var User $user */
-        $user = $request->user();
+        /** @var Article $model */
+        $model = new Article();
+        $model->fill($request->all());
         if ($request->hasFile('cover')) {
-            $user->saveCoverByFile($request->file('cover'));
+            $model->saveCoverByFile($request->file('cover'));
         }
 
-        if($request->input('name')) {
-            $user->name = $request->input('name');
-        }
-
-        if (!$user->save()) {
-            return $this->sendJsonErrors('Account not save. DB error');
+        if (!$model->save()) {
+            return $this->sendJsonErrors('Post not save. DB error');
         }
 
         return $this->sendJson([
-            'UserSeeder' => $user
+            'post' => $model
         ]);
     }
 
@@ -126,24 +165,48 @@ class PostController extends Controller
      *
      */
 
+    public function create(Request $request, $id)
+    {
+        $post = Article::query()->find($id);
+        if (!$post) {
+            return $this->sendJsonErrors('Invalid post id', 404);
+        }
 
+        $validator = $this->getValidationFactory()->make($request->all(), [
+            'title' => 'required|string|max:25|min:3',
+            'info'  => 'string|max:25|min:3',
+            'date_from'  => 'date|required',
+            'date_to'  => 'date|required',
+            'time_from'  => 'time|required',
+            'time_to'  => 'time|required',
+            'address'  => 'string|required',
+            'category_id'  => 'required',
+            'is_private'  => 'bool',
+            'number_extra_tickets'  => 'required',
+            'lat'  => 'required',
+            'lng'  => 'required',
+            'cover' => 'required_without:name|file|mimes:jpeg,bmp,png,jpg',
+        ]);
 
-    /**
-     * @SWG\Get(
-     *      path="/post/all",
-     *      operationId="Get All posts",
-     *      tags={"post"},
-     *      summary="Get All Posts",
-     *      description="Get All Posts",
-     *      security={{"X-Api-Token":{}}},
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation"
-     *       ),
-     *       @SWG\Response(response=400, description="Bad request"),
-     *     )
-     *
-     */
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        /** @var Article $model */
+        $model = new Article();
+        $model->fill($request->all());
+        if ($request->hasFile('cover')) {
+            $model->saveCoverByFile($request->file('cover'));
+        }
+
+        if (!$model->save()) {
+            return $this->sendJsonErrors('Post not save. DB error');
+        }
+
+        return $this->sendJson([
+            'post' => $model
+        ]);
+    }
 
 
 
@@ -163,5 +226,12 @@ class PostController extends Controller
      *     )
      *
      */
+    public function categories(Request $request)
+    {
+        $collection = Category::query()->get();
 
+        return $this->sendJson([
+            'categories' => $collection
+        ]);
+    }
 }

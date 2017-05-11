@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Article extends Model
 {
+    const COVER_FOLDER = 'post_covers';
+
     protected $fillable = array(
         'title',
         'info',
@@ -36,16 +39,18 @@ class Article extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function getCategory()
-    {
-        if (!isset($this->category->id) || $this->category->status != self::STATUS_ACTIVE) {
-            $this->category = (new Category())->setDefault();
-        }
-        return $this->category;
-    }
-
     public function getUser()
     {
         return (isset($this->user)) ? $this->user : App::make('\App\Modules\VergoBase\Database\Models\User')->setDefault();
+    }
+
+    /**
+     * @param  \Illuminate\Http\UploadedFile|array|null $file
+     */
+    public function saveCoverByFile($file)
+    {
+        $fileName = md5(uniqid(time(), true)) . '.' . $file->getClientOriginalExtension();
+        $this->cover = $fileName;
+        Storage::putFileAs(self::COVER_FOLDER, $file, $fileName);
     }
 }

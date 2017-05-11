@@ -1,0 +1,313 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Together Api Doc",
+        "description": "Api Docs",
+        "version": "0.1."
+    },
+    "basePath": "/api",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/auth/registration": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "User registration",
+                "description": "Register user with token",
+                "operationId": "registration",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Post Data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserAuth"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "User login",
+                "description": "Login user by password",
+                "operationId": "login",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Post Data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserAuth"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/auth/soc": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Social User Twitter/Facebook auth",
+                "description": "Social user Twitter/Facebook auth",
+                "operationId": "Social Twitter/Facebook auth",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Post Data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AuthSoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "User information",
+                "description": "Get user",
+                "operationId": "getUserInfo",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update User information",
+                "description": "Update user",
+                "operationId": "updateUserInfo",
+                "parameters": [
+                    {
+                        "name": "userUpdate",
+                        "in": "body",
+                        "description": "User Post Data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        }
+    },
+    "definitions": {
+        "UserAuth": {
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "AuthSoc": {
+            "required": [
+                "type",
+                "access_token"
+            ],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "fb",
+                        "tw"
+                    ]
+                },
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserUpdate": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "file"
+                }
+            }
+        },
+        "Id": {
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        },
+        "UserId": {
+            "properties": {
+                "user_id": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        },
+        "Email": {
+            "properties": {
+                "email": {
+                    "description": "must be a valid email address.",
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 255,
+                    "example": "example@example.com"
+                }
+            }
+        },
+        "Phone": {
+            "properties": {
+                "phone": {
+                    "description": "[Validation Rule Details](https://regex101.com/r/iD1kP5/1), [Discussion](https://trello.com/c/n4Xqa2W5)",
+                    "type": "string",
+                    "pattern": "^\\d{1,4},\\d{5,10}$",
+                    "example": "1,123456789"
+                }
+            }
+        },
+        "Avatar": {
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                }
+            }
+        },
+        "Cover": {
+            "properties": {
+                "cover": {
+                    "type": "string"
+                }
+            }
+        },
+        "Location": {
+            "properties": {
+                "lat": {
+                    "description": "min: -90f, max: 90f",
+                    "type": "number",
+                    "format": "float",
+                    "maximum": 90,
+                    "minimum": -90,
+                    "example": 45.51695
+                },
+                "lng": {
+                    "description": "min: -180f, max: 180f",
+                    "type": "number",
+                    "format": "float",
+                    "maximum": 180,
+                    "minimum": -180,
+                    "example": -73.55481
+                }
+            }
+        }
+    },
+    "responses": {
+        "Ok": {
+            "description": "`OK`"
+        },
+        "Created": {
+            "description": "`CREATED`"
+        },
+        "BadRequest": {
+            "description": "`BAD_REQUEST`"
+        },
+        "Unauthorized": {
+            "description": "`UNAUTHORIZED`"
+        },
+        "NotFound": {
+            "description": "`NOT_FOUND`"
+        },
+        "ConflictEmailExists": {
+            "description": "`EMAIL_EXISTS`"
+        },
+        "Invalidation": {
+            "description": "`VALIDATION_ERROR`"
+        },
+        "UnexpectedError": {
+            "description": "`UNEXPECTED_ERROR`"
+        }
+    },
+    "securityDefinitions": {
+        "basic": {
+            "type": "basic"
+        },
+        "X-Api-Token": {
+            "type": "apiKey",
+            "name": "X-Api-Token",
+            "in": "header"
+        }
+    }
+}

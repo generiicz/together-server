@@ -5,7 +5,7 @@
         "description": "Api Docs",
         "version": "0.1."
     },
-    "basePath": "/api",
+    "basePath": "/app",
     "schemes": [
         "http"
     ],
@@ -16,6 +16,41 @@
         "application/json"
     ],
     "paths": {
+        "/friend/add": {
+            "post": {
+                "tags": [
+                    "user",
+                    "friend"
+                ],
+                "summary": "Add Friend",
+                "description": "Add User by id to friend",
+                "operationId": "addToFriend",
+                "parameters": [
+                    {
+                        "name": "userFriend",
+                        "in": "body",
+                        "description": "User Friend Post Data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserFriend"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        },
         "/auth/registration": {
             "post": {
                 "tags": [
@@ -160,6 +195,13 @@
         }
     },
     "definitions": {
+        "UserFriend": {
+            "properties": {
+                "friend_id": {
+                    "type": "int"
+                }
+            }
+        },
         "UserAuth": {
             "required": [
                 "email",

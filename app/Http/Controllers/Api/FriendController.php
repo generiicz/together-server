@@ -1,0 +1,107 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: selmarinel
+ * Date: 12.05.17
+ * Time: 8:41
+ */
+
+namespace App\Http\Controllers\Api;
+
+use App\Models\User;
+use App\Models\UserRelationship;
+use Illuminate\Http\Request;
+
+class FriendController extends Controller
+{
+
+    /**
+     * @SWG\Definition(
+     *            definition="UserFriend",
+     * 			@SWG\Property(property="friend_id", type="int"),
+     *        )
+     */
+
+    /**
+     * @SWG\Post(
+     *      path="/friend/add",
+     *      operationId="addToFriend",
+     *      tags={"user","friend"},
+     *      summary="Add Friend",
+     *      description="Add User by id to friend",
+     *      security={{"X-Api-Token":{}}},
+     *      @SWG\Parameter(
+     *          name="userFriend", in="body", required=true, description="User Friend Post Data",
+     *          @SWG\Schema(ref="#/definitions/UserFriend"),
+     *      ),
+     *      @SWG\Response(
+     *          response=200,
+     *          description="successful operation"
+     *       ),
+     *       @SWG\Response(response=400, description="Bad request"),
+     *     )
+     *
+     * Returns Result of Action "Adding to friend"
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addFriendAction(Request $request)
+    {
+        $validator = $this->getValidationFactory()->make($request->all(), [
+            'friend_id' => 'required|numeric|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+        /** @var User $user */
+        $user = $request->user();
+        /** @var UserRelationship $relationship */
+        $relationship = UserRelationship::query()
+            ->where('user_id',$user->id)
+            ->where('friend_id',$request->get("friend_id"))
+            ->first();
+        /**
+         * If exist relation and it was deleted
+         * Remove deleted_at
+         */
+        if($relationship){
+            if($relationship->deleted_at){
+                $relationship->deleted_at = null;
+            } else {
+                /**
+                 * Or id relation exist, but deleted_at is null
+                 * It's seems that relation is active
+                 */
+                return $this->sendJsonErrors('User already added');
+            }
+        } else {
+            /**
+             * In the other hand
+             * Create relationship
+             */
+            $relationship = new UserRelationship();
+            $relationship->fill([
+                "user_id" => $user->id,
+                "friend_id" => $request->input('friend_id')
+            ]);
+        }
+        if(!$relationship->save()){
+            return $this->sendJsonErrors('Relation not saved');
+        }
+        return $this->sendJson([
+            'user' => $user
+        ]);
+
+    }
+
+    public function removeFriendAction(Request $request)
+    {
+
+    }
+
+    public function listFriendsAction(Request $request)
+    {
+
+    }
+}

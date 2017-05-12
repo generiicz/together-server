@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use App\Models\UserRelationship;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class FriendController extends Controller
@@ -18,7 +19,7 @@ class FriendController extends Controller
     /**
      * @SWG\Definition(
      *            definition="UserFriend",
-     * 			@SWG\Property(property="friend_id", type="int"),
+     * 			@SWG\Property(property="friend_id", type="integer"),
      *        )
      */
 
@@ -160,8 +161,51 @@ class FriendController extends Controller
         ]);
     }
 
+    /**
+     * @SWG\Definition(
+     *            definition="UserInfo",
+     * 			@SWG\Property(property="id", type="integer"),
+     * 			@SWG\Property(property="name", type="string"),
+     * 			@SWG\Property(property="cover", type="string"),
+     *        )
+     */
+
+    /**
+     * @SWG\Definition(
+     *            definition="FriendsList",
+     * 			@SWG\Property(property="list", type="array", items=@SWG\Schema(ref="#/definitions/UserInfo"),),
+     *        )
+     */
+
+    /**
+     * @SWG\Get(
+     *      path="/friend/list",
+     *      operationId="friendsList",
+     *      tags={"user","friend"},
+     *      summary="Show List",
+     *      description="Show Friend list",
+     *      security={{"X-Api-Token":{}}},
+     *      @SWG\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @SWG\Schema(ref="#/definitions/FriendsList"),
+     *       ),
+     *       @SWG\Response(response=400, description="Bad request"),
+     *     )
+     *
+     * Returns friend list
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function friendsListAction(Request $request)
     {
+        /** @var User $user */
+        $user = $request->user();
 
+        $list = [];
+        foreach ($user->relations as $user) {
+            $list[] = $user->getBaseInfo();
+        }
+        return $this->sendJson(["list" => $list]);
     }
 }

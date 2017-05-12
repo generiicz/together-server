@@ -57,8 +57,8 @@
                     "user",
                     "friend"
                 ],
-                "summary": "Add Friend",
-                "description": "Add User by id to friend",
+                "summary": "Remove Friend",
+                "description": "Remove Friend by id",
                 "operationId": "removeFromFriend",
                 "parameters": [
                     {
@@ -74,6 +74,33 @@
                 "responses": {
                     "200": {
                         "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        },
+        "/friend/list": {
+            "get": {
+                "tags": [
+                    "user",
+                    "friend"
+                ],
+                "summary": "Show List",
+                "description": "Show Friend list",
+                "operationId": "friendsList",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/FriendsList"
+                        }
                     },
                     "400": {
                         "description": "Bad request"
@@ -233,7 +260,30 @@
         "UserFriend": {
             "properties": {
                 "friend_id": {
-                    "type": "int"
+                    "type": "integer"
+                }
+            }
+        },
+        "UserInfo": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "string"
+                }
+            }
+        },
+        "FriendsList": {
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserInfo"
+                    }
                 }
             }
         },

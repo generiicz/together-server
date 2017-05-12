@@ -22,6 +22,10 @@ Route::group(['middleware' => 'api_auth', 'prefix' => 'user'], function () {
     Route::post('/', 'Api\UserController@update');
 });
 
+Route::group(['middleware' => 'api_auth', 'prefix' => 'friend'],function(){
+    Route::post('/add','Api\FriendController@addFriendAction');
+});
+
 //Route::middleware('api')->get('/user', function (Request $request) {
 //    return response()->json(['OK'=>200]);
 //});

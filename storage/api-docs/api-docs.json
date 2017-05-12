@@ -5,7 +5,7 @@
         "description": "Api Docs",
         "version": "0.1."
     },
-    "basePath": "/api",
+    "basePath": "/app",
     "schemes": [
         "http"
     ],
@@ -157,6 +157,43 @@
                     }
                 ]
             }
+        },
+        "/find": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Find User",
+                "description": "Find User by Name",
+                "operationId": "findByName",
+                "parameters": [
+                    {
+                        "name": "userName",
+                        "in": "body",
+                        "description": "User Post Data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserToFind"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/UserList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
         }
     },
     "definitions": {
@@ -199,6 +236,36 @@
                 },
                 "cover": {
                     "type": "file"
+                }
+            }
+        },
+        "UserToFind": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserInfo": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserList": {
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserInfo"
+                    }
                 }
             }
         },

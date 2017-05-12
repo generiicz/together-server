@@ -58,15 +58,15 @@ class FriendController extends Controller
         $user = $request->user();
         /** @var UserRelationship $relationship */
         $relationship = UserRelationship::query()
-            ->where('user_id',$user->id)
-            ->where('friend_id',$request->get("friend_id"))
+            ->where('user_id', $user->id)
+            ->where('friend_id', $request->get("friend_id"))
             ->first();
         /**
          * If exist relation and it was deleted
          * Remove deleted_at
          */
-        if($relationship){
-            if($relationship->deleted_at){
+        if ($relationship) {
+            if ($relationship->deleted_at) {
                 $relationship->deleted_at = null;
             } else {
                 /**
@@ -86,7 +86,7 @@ class FriendController extends Controller
                 "friend_id" => $request->input('friend_id')
             ]);
         }
-        if(!$relationship->save()){
+        if (!$relationship->save()) {
             return $this->sendJsonErrors('Relation not saved');
         }
         return $this->sendJson([
@@ -95,12 +95,72 @@ class FriendController extends Controller
 
     }
 
+    /**
+     * @SWG\Post(
+     *      path="/friend/remove",
+     *      operationId="removeFromFriend",
+     *      tags={"user","friend"},
+     *      summary="Remove Friend",
+     *      description="Remove Friend by id",
+     *      security={{"X-Api-Token":{}}},
+     *      @SWG\Parameter(
+     *          name="userFriend", in="body", required=true, description="User Friend Post Data",
+     *          @SWG\Schema(ref="#/definitions/UserFriend"),
+     *      ),
+     *      @SWG\Response(
+     *          response=200,
+     *          description="successful operation"
+     *       ),
+     *       @SWG\Response(response=400, description="Bad request"),
+     *     )
+     *
+     * Returns Result of Action "Removing to friend"
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function removeFriendAction(Request $request)
     {
+        $validator = $this->getValidationFactory()->make($request->all(), [
+            'friend_id' => 'required|numeric|exists:users,id',
+        ]);
 
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        /** @var User $user */
+        $user = $request->user();
+        /** @var UserRelationship $relationship */
+        $relationship = UserRelationship::query()
+            ->where('user_id', $user->id)
+            ->where('friend_id', $request->get("friend_id"))
+            ->first();
+        /**
+         * If not exist relation
+         */
+        if (!$relationship) {
+            return $this->sendJsonErrors('Relationship is not exists');
+        }
+        /**
+         * If exist relation
+         * And deleted at is not null
+         */
+        if ($relationship->deleted_at) {
+            return $this->sendJsonErrors('User already removed');
+        }
+        /**
+         *
+         */
+        $relationship->deleted_at = new \DateTime("now");
+        if (!$relationship->save()) {
+            return $this->sendJsonErrors('Relation not saved');
+        }
+        return $this->sendJson([
+            'user' => $user
+        ]);
     }
 
-    public function listFriendsAction(Request $request)
+    public function friendsListAction(Request $request)
     {
 
     }

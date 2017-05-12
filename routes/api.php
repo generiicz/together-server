@@ -24,6 +24,7 @@ Route::group(['middleware' => 'api_auth', 'prefix' => 'user'], function () {
 
 Route::group(['middleware' => 'api_auth', 'prefix' => 'friend'],function(){
     Route::post('/add','Api\FriendController@addFriendAction');
+    Route::post('/remove','Api\FriendController@removeFriendAction');
 });
 
 //Route::middleware('api')->get('/user', function (Request $request) {

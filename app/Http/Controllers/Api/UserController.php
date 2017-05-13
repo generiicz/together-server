@@ -110,7 +110,7 @@ class UserController extends Controller
     /**
      * @SWG\Definition(
      *            definition="UserList",
-     * 			@SWG\Property(property="list", type="array", items=@SWG\Schema(ref="#/definitions/UserInfo"),),
+     * 			@SWG\Property(property="data", type="array", items=@SWG\Schema(ref="#/definitions/UserInfo"),),
      *        )
      */
 
@@ -154,6 +154,6 @@ class UserController extends Controller
              */
             $result[] = $user;
         }
-        return $this->sendJson(["list" => $result]);
+        return $this->sendJson($result);
     }
 }

@@ -261,7 +261,7 @@
         },
         "UserList": {
             "properties": {
-                "list": {
+                "data": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/UserInfo"

@@ -22,3 +22,23 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\Models\Article::class, function (Faker\Generator $faker) {
+    $infoWords = $faker->numberBetween(50,150);
+    return [
+        'user_id' => 1,
+        'category_id' => 1,
+        'title' => $faker->title,
+        'info' => $faker->text($infoWords),
+        'date_from' => $faker->date(),
+        'date_to' => $faker->dateTimeBetween('now', '30 years')->format('Y-m-d'),
+        'time_from' => $faker->time(),
+        'time_to' => $faker->time(),
+        'is_private' => 0,
+        'number_extra_tickets' => $faker->numberBetween(0, 20),
+        'address' =>  $faker->country . ' ' . $faker->city . ' ' . $faker->address,
+        'lat' => $faker->latitude(),
+        'lng' => $faker->longitude(),
+        'status' => 1,
+    ];
+});

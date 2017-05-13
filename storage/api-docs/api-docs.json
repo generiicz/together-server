@@ -5,7 +5,7 @@
         "description": "Api Docs",
         "version": "0.1."
     },
-    "basePath": "/api",
+    "basePath": "/app",
     "schemes": [
         "http"
     ],
@@ -157,6 +157,43 @@
                     }
                 ]
             }
+        },
+        "/filter": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Search users by age or/and sex",
+                "description": "Search users",
+                "operationId": "filterUser",
+                "parameters": [
+                    {
+                        "name": "filter",
+                        "in": "body",
+                        "description": "User Post Data",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/filter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/UserList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
         }
     },
     "definitions": {
@@ -199,6 +236,45 @@
                 },
                 "cover": {
                     "type": "file"
+                }
+            }
+        },
+        "UserInfo": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "cover": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserList": {
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserInfo"
+                    }
+                }
+            }
+        },
+        "filter": {
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "sex": {
+                    "type": "string"
                 }
             }
         },

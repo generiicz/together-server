@@ -173,7 +173,7 @@ class FriendController extends Controller
     /**
      * @SWG\Definition(
      *            definition="FriendsList",
-     * 			@SWG\Property(property="list", type="array", items=@SWG\Schema(ref="#/definitions/UserInfo"),),
+     * 			@SWG\Property(property="data", type="array", items=@SWG\Schema(ref="#/definitions/UserInfo"),),
      *        )
      */
 
@@ -206,6 +206,6 @@ class FriendController extends Controller
         foreach ($user->relations as $user) {
             $list[] = $user->getBaseInfo();
         }
-        return $this->sendJson(["list" => $list]);
+        return $this->sendJson($list);
     }
 }

@@ -62,7 +62,6 @@ class UserController extends Controller
      *     )
      *
      */
-
     public function update(Request $request)
     {
         $validator = $this->getValidationFactory()->make($request->all(), [
@@ -80,7 +79,7 @@ class UserController extends Controller
             $user->saveCoverByFile($request->file('cover'));
         }
 
-        if($request->input('name')) {
+        if ($request->input('name')) {
             $user->name = $request->input('name');
         }
 
@@ -91,5 +90,146 @@ class UserController extends Controller
         return $this->sendJson([
             'user' => $user
         ]);
+    }
+
+    /**
+     * @SWG\Definition(
+     *            definition="UserInfo",
+     * 			@SWG\Property(property="id", type="integer"),
+     * 			@SWG\Property(property="name", type="string"),
+     * 			@SWG\Property(property="sex", type="string"),
+     * 			@SWG\Property(property="age", type="integer"),
+     * 			@SWG\Property(property="cover", type="string"),
+     *        )
+     */
+    /**
+     * @SWG\Definition(
+     *            definition="UserList",
+     * 			@SWG\Property(property="data", type="array", items=@SWG\Schema(ref="#/definitions/UserInfo"),),
+     *        )
+     */
+
+    /**
+     * @SWG\Definition(
+     *            definition="filter",
+     * 			@SWG\Property(property="age", type="integer"),
+     * 			@SWG\Property(property="sex", type="string"),
+     *        )
+     */
+
+    /**
+     * @SWG\Post(
+     *      path="/filter",
+     *      operationId="filterUser",
+     *      tags={"user"},
+     *      summary="Search users by age or/and sex",
+     *      description="Search users",
+     *      security={{"X-Api-Token":{}}},
+     *      @SWG\Parameter(
+     *          name="filter", in="body", required=false, description="User Post Data",
+     *          @SWG\Schema(ref="#/definitions/filter"),
+     *      ),
+     *      @SWG\Response(
+     *          response=200,
+     *          @SWG\Schema(ref="#/definitions/UserList"),
+     *          description="successful operation"
+     *       ),
+     *       @SWG\Response(response=400, description="Bad request"),
+     *     )
+     */
+    public function filterAction(Request $request)
+    {
+        /**
+         * Filters list
+         * May use another filters.. for example may use filter by name
+         * in task TOG-3
+         * Tito, what you think about it?
+         */
+        $validator = $this->getValidationFactory()->make($request->all(), [
+            'sex' => 'string|in:' . implode(",", User::sexList()),
+            'age' => 'integer',
+        ]);
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+        /**
+         * Using query builder and scopes
+         * To search users
+         */
+        $builder = new User();
+
+        if ($request->get("sex")) {
+            $builder = $builder->ofSex(User::MALE);
+        }
+        if ($request->get("age")) {
+            $builder = $builder->ofAge("<", 19);
+        }
+
+        $collection = $builder->get();
+        return $this->sendJson($collection);
+    }
+    
+    /**
+     * @SWG\Definition(
+     *            definition="UserToFind",
+     * 			@SWG\Property(property="name", type="string"),
+     *        )
+     */
+    /**
+     * @SWG\Definition(
+     *            definition="UserInfo",
+     * 			@SWG\Property(property="id", type="integer"),
+     * 			@SWG\Property(property="name", type="string"),
+     * 			@SWG\Property(property="cover", type="string"),
+     *        )
+     */
+    /**
+     * @SWG\Definition(
+     *            definition="UserList",
+     * 			@SWG\Property(property="data", type="array", items=@SWG\Schema(ref="#/definitions/UserInfo"),),
+     *        )
+     */
+
+    /**
+     * @SWG\Post(
+     *      path="/find",
+     *      operationId="findByName",
+     *      tags={"user"},
+     *      summary="Find User",
+     *      description="Find User by Name",
+     *      security={{"X-Api-Token":{}}},
+     *      @SWG\Parameter(
+     *          name="userName", in="body", required=true, description="User Post Data",
+     *          @SWG\Schema(ref="#/definitions/UserToFind"),
+     *      ),
+     *      @SWG\Response(
+     *          response=200,
+     *          @SWG\Schema(ref="#/definitions/UserList"),
+     *          description="successful operation"
+     *       ),
+     *       @SWG\Response(response=400, description="Bad request"),
+     *     )
+     *
+     */
+    public function findByNameAction(Request $request)
+    {
+        $validator = $this->getValidationFactory()->make($request->all(), [
+            'name' => 'required|string|max:25|min:3',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+        $findCollection = User::query()
+            ->where("name", "like", "%" . $request->get("name") . "%")
+            ->get();
+        $result = [];
+        foreach ($findCollection as $user) {
+            /**
+             * Todo: Process information by user
+             */
+            $result[] = $user;
+        }
+        return $this->sendJson($result);
     }
 }

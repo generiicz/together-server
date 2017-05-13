@@ -75,4 +75,24 @@ class User extends Authenticatable
         $cover = $cover ?: $this->cover;
         return self::COVER_FOLDER . '/' . $cover;
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function relations()
+    {
+        return $this->hasMany(UserRelationship::class);
+    }
+
+    /**
+     * @return array
+     */
+    public function getBaseInfo()
+    {
+        return [
+            "id" => $this->id,
+            "name" => $this->name,
+            "cover" => $this->cover,
+        ];
+    }
 }

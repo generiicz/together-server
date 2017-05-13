@@ -104,9 +104,13 @@ class PostController extends Controller
      *     )
      *
      */
-
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
+        $post = Article::query()->find($id);
+        if (!$post) {
+            return $this->sendJsonErrors('Invalid post id', 404);
+        }
+
         $validator = $this->getValidationFactory()->make($request->all(), [
             'title' => 'required|string|max:25|min:3',
             'info'  => 'string|max:25|min:3',
@@ -165,13 +169,8 @@ class PostController extends Controller
      *
      */
 
-    public function create(Request $request, $id)
+    public function create(Request $request)
     {
-        $post = Article::query()->find($id);
-        if (!$post) {
-            return $this->sendJsonErrors('Invalid post id', 404);
-        }
-
         $validator = $this->getValidationFactory()->make($request->all(), [
             'title' => 'required|string|max:25|min:3',
             'info'  => 'string|max:25|min:3',

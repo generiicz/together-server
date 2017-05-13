@@ -20,6 +20,12 @@ Route::post('/auth/registration', 'Api\RegisterController@registration');
 Route::group(['middleware' => 'api_auth', 'prefix' => 'user'], function () {
     Route::get('/', 'Api\UserController@index');
     Route::post('/', 'Api\UserController@update');
+
+    Route::get('/post', 'Api\PostController@one');
+    Route::post('/post/{id}', 'Api\PostController@update');
+    Route::post('/post/create', 'Api\PostController@create');
+    Route::get('/post/all', 'Api\PostController@index');
+    Route::get('/categories', 'Api\PostController@categories');
 });
 
 //Route::middleware('api')->get('/user', function (Request $request) {

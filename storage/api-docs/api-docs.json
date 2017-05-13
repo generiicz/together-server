@@ -5,7 +5,7 @@
         "description": "Api Docs",
         "version": "0.1."
     },
-    "basePath": "/app",
+    "basePath": "/api",
     "schemes": [
         "http"
     ],
@@ -16,6 +16,258 @@
         "application/json"
     ],
     "paths": {
+        "/friend/add": {
+            "post": {
+                "tags": [
+                    "user",
+                    "friend"
+                ],
+                "summary": "Add Friend",
+                "description": "Add User by id to friend",
+                "operationId": "addToFriend",
+                "parameters": [
+                    {
+                        "name": "userFriend",
+                        "in": "body",
+                        "description": "User Friend Post Data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserFriend"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        },
+        "/friend/remove": {
+            "post": {
+                "tags": [
+                    "user",
+                    "friend"
+                ],
+                "summary": "Remove Friend",
+                "description": "Remove Friend by id",
+                "operationId": "removeFromFriend",
+                "parameters": [
+                    {
+                        "name": "userFriend",
+                        "in": "body",
+                        "description": "User Friend Post Data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserFriend"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        },
+        "/friend/list": {
+            "get": {
+                "tags": [
+                    "user",
+                    "friend"
+                ],
+                "summary": "Show List",
+                "description": "Show Friend list",
+                "operationId": "friendsList",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/FriendsList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        },
+        "/post/get": {
+            "get": {
+                "tags": [
+                    "post"
+                ],
+                "summary": "Get All Posts",
+                "description": "Get All Posts",
+                "operationId": "Get All posts",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        },
+        "/post/get/{post_id}": {
+            "get": {
+                "tags": [
+                    "post"
+                ],
+                "summary": "Post information",
+                "description": "Get post",
+                "operationId": "getPostInfo",
+                "parameters": [
+                    {
+                        "name": "post_id",
+                        "in": "path",
+                        "description": "ID of Post",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        },
+        "/post/update/{post_id}": {
+            "post": {
+                "tags": [
+                    "post"
+                ],
+                "summary": "Update Post information",
+                "description": "Update Post",
+                "operationId": "post update",
+                "parameters": [
+                    {
+                        "name": "post_id",
+                        "in": "path",
+                        "description": "ID of Post",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "postUpdate",
+                        "in": "body",
+                        "description": "Post Data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PostUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        },
+        "/post/create": {
+            "post": {
+                "tags": [
+                    "post"
+                ],
+                "summary": "Create new Post",
+                "description": "Create Post",
+                "operationId": "Post create",
+                "parameters": [
+                    {
+                        "name": "postUpdate",
+                        "in": "body",
+                        "description": "Create Post Data",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PostUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        },
+        "/post/categories": {
+            "get": {
+                "tags": [
+                    "post"
+                ],
+                "summary": "Get All posts category",
+                "description": "Get All posts category",
+                "operationId": "Get All posts category",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "X-Api-Token": []
+                    }
+                ]
+            }
+        },
         "/auth/registration": {
             "post": {
                 "tags": [
@@ -158,12 +410,12 @@
                 ]
             }
         },
-        "/filter": {
+        "/user/filter": {
             "post": {
                 "tags": [
                     "user"
                 ],
-                "summary": "Search users by age or/and sex",
+                "summary": "Search users by name or/and age or/and sex",
                 "description": "Search users",
                 "operationId": "filterUser",
                 "parameters": [
@@ -197,6 +449,66 @@
         }
     },
     "definitions": {
+        "UserFriend": {
+            "properties": {
+                "friend_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "FriendsList": {
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserShortInfo"
+                    }
+                }
+            }
+        },
+        "PostUpdate": {
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "info": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "file"
+                },
+                "date_from": {
+                    "type": "string"
+                },
+                "date_to": {
+                    "type": "string"
+                },
+                "time_from": {
+                    "type": "string"
+                },
+                "time_to": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "category_id": {
+                    "type": "number"
+                },
+                "is_private": {
+                    "type": "boolean"
+                },
+                "number_extra_tickets": {
+                    "type": "number"
+                },
+                "lat": {
+                    "type": "string"
+                },
+                "lng": {
+                    "type": "string"
+                }
+            }
+        },
         "UserAuth": {
             "required": [
                 "email",
@@ -258,22 +570,15 @@
                 }
             }
         },
-        "UserList": {
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/UserInfo"
-                    }
-                }
-            }
-        },
         "filter": {
             "properties": {
                 "age": {
                     "type": "integer"
                 },
                 "sex": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }

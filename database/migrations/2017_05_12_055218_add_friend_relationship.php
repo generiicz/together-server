@@ -13,12 +13,17 @@ class AddFriendRelationship extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('user_relationship');
         Schema::create('user_relationship', function (Blueprint $table) {
-            $table->increments('id');
-            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('friend_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('id')->primary();
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('friend_id');
             $table->softDeletes();
             $table->timestamps();
+        });
+        Schema::table('user_relationship', function(Blueprint $table) {
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('friend_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

@@ -17,6 +17,8 @@ Route::post('/auth/login', 'Api\RegisterController@login');
 Route::post('/auth/soc', 'Api\RegisterController@socAuth');
 Route::post('/auth/registration', 'Api\RegisterController@registration');
 
+Route::post('/find', 'Api\UserController@findByNameAction');
+
 Route::group(['middleware' => 'api_auth', 'prefix' => 'user'], function () {
     Route::get('/', 'Api\UserController@index');
     Route::post('/', 'Api\UserController@update');

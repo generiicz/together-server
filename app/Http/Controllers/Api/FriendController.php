@@ -163,17 +163,8 @@ class FriendController extends Controller
 
     /**
      * @SWG\Definition(
-     *            definition="UserInfo",
-     * 			@SWG\Property(property="id", type="integer"),
-     * 			@SWG\Property(property="name", type="string"),
-     * 			@SWG\Property(property="cover", type="string"),
-     *        )
-     */
-
-    /**
-     * @SWG\Definition(
      *            definition="FriendsList",
-     * 			@SWG\Property(property="data", type="array", items=@SWG\Schema(ref="#/definitions/UserInfo"),),
+     * 			@SWG\Property(property="data", type="array", items=@SWG\Schema(ref="#/definitions/UserShortInfo"),),
      *        )
      */
 

@@ -21,5 +21,15 @@ class PostSeeder extends Seeder
             $post->category_id = 1;
             $post->user_id = 1;
         });
+
+        \App\Models\Category::create([
+            'name'	        => 'Art'
+        ]);
+
+
+        factory(\App\Models\Article::class, 5)->create()->each(function($post) use ($faker) {
+            $post->category_id = 2;
+            $post->user_id = 1;
+        });
     }
 }

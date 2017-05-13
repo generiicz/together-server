@@ -28,7 +28,7 @@ $factory->define(App\Models\Article::class, function (Faker\Generator $faker) {
     return [
         'user_id' => 1,
         'category_id' => 1,
-        'title' => $faker->title,
+        'title' => $faker->name,
         'info' => $faker->text($infoWords),
         'date_from' => $faker->date(),
         'date_to' => $faker->dateTimeBetween('now', '30 years')->format('Y-m-d'),

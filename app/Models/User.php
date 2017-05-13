@@ -29,7 +29,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
+        'password',
+        'sex',
+        'age',
     ];
 
     /**
@@ -53,8 +57,8 @@ class User extends Authenticatable
 
     public function getCoverAttribute($cover = '')
     {
-        if(!$cover || !Storage::exists($this->getRealStorageCoverPath($cover))) {
-            return (string) $cover;
+        if (!$cover || !Storage::exists($this->getRealStorageCoverPath($cover))) {
+            return (string)$cover;
         }
 
         return Storage::url($this->getRealStorageCoverPath($cover));
@@ -74,5 +78,20 @@ class User extends Authenticatable
     {
         $cover = $cover ?: $this->cover;
         return self::COVER_FOLDER . '/' . $cover;
+    }
+
+    public function scopeOfSex($query, $sex)
+    {
+        return $query->where("sex", $sex);
+    }
+
+    public function scopeOfAge($query, $operand, $age)
+    {
+        return $query->where("age", $operand, $age);
+    }
+
+    public static function sexList()
+    {
+        return [self::ALIEN, self::MALE, self::FEMALE];
     }
 }

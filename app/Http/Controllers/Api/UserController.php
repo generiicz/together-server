@@ -92,6 +92,22 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @SWG\Definition(
+     *            definition="UserInfo",
+     * 			@SWG\Property(property="id", type="integer"),
+     * 			@SWG\Property(property="name", type="string"),
+     * 			@SWG\Property(property="sex", type="string"),
+     * 			@SWG\Property(property="age", type="integer"),
+     * 			@SWG\Property(property="cover", type="string"),
+     *        )
+     */
+    /**
+     * @SWG\Definition(
+     *            definition="UserList",
+     * 			@SWG\Property(property="data", type="array", items=@SWG\Schema(ref="#/definitions/UserInfo"),),
+     *        )
+     */
 
     /**
      * @SWG\Definition(
@@ -100,8 +116,6 @@ class UserController extends Controller
      * 			@SWG\Property(property="sex", type="string"),
      *        )
      */
-
-
 
     /**
      * @SWG\Post(
@@ -117,6 +131,7 @@ class UserController extends Controller
      *      ),
      *      @SWG\Response(
      *          response=200,
+     *          @SWG\Schema(ref="#/definitions/UserList"),
      *          description="successful operation"
      *       ),
      *       @SWG\Response(response=400, description="Bad request"),

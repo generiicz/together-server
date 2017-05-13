@@ -179,7 +179,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "successful operation"
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/UserList"
+                        }
                     },
                     "400": {
                         "description": "Bad request"
@@ -233,6 +236,35 @@
                 },
                 "cover": {
                     "type": "file"
+                }
+            }
+        },
+        "UserInfo": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "cover": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserList": {
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserInfo"
+                    }
                 }
             }
         },

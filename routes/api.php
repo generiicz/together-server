@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 Route::post('/auth/login', 'Api\RegisterController@login');
 Route::post('/auth/soc', 'Api\RegisterController@socAuth');
 Route::post('/auth/registration', 'Api\RegisterController@registration');
+Route::get('/filter', 'Api\UserController@filterAction');
 
 Route::post('/find', 'Api\UserController@findByNameAction');
 

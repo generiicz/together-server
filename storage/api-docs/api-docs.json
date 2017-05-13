@@ -16,103 +16,6 @@
         "application/json"
     ],
     "paths": {
-        "/friend/add": {
-            "post": {
-                "tags": [
-                    "user",
-                    "friend"
-                ],
-                "summary": "Add Friend",
-                "description": "Add User by id to friend",
-                "operationId": "addToFriend",
-                "parameters": [
-                    {
-                        "name": "userFriend",
-                        "in": "body",
-                        "description": "User Friend Post Data",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/UserFriend"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    }
-                },
-                "security": [
-                    {
-                        "X-Api-Token": []
-                    }
-                ]
-            }
-        },
-        "/friend/remove": {
-            "post": {
-                "tags": [
-                    "user",
-                    "friend"
-                ],
-                "summary": "Remove Friend",
-                "description": "Remove Friend by id",
-                "operationId": "removeFromFriend",
-                "parameters": [
-                    {
-                        "name": "userFriend",
-                        "in": "body",
-                        "description": "User Friend Post Data",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/UserFriend"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    }
-                },
-                "security": [
-                    {
-                        "X-Api-Token": []
-                    }
-                ]
-            }
-        },
-        "/friend/list": {
-            "get": {
-                "tags": [
-                    "user",
-                    "friend"
-                ],
-                "summary": "Show List",
-                "description": "Show Friend list",
-                "operationId": "friendsList",
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/FriendsList"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    }
-                },
-                "security": [
-                    {
-                        "X-Api-Token": []
-                    }
-                ]
-            }
-        },
         "/auth/registration": {
             "post": {
                 "tags": [
@@ -255,22 +158,22 @@
                 ]
             }
         },
-        "/find": {
+        "/filter": {
             "post": {
                 "tags": [
                     "user"
                 ],
-                "summary": "Find User",
-                "description": "Find User by Name",
-                "operationId": "findByName",
+                "summary": "Search users by age or/and sex",
+                "description": "Search users",
+                "operationId": "filterUser",
                 "parameters": [
                     {
-                        "name": "userName",
+                        "name": "filter",
                         "in": "body",
                         "description": "User Post Data",
-                        "required": true,
+                        "required": false,
                         "schema": {
-                            "$ref": "#/definitions/UserToFind"
+                            "$ref": "#/definitions/filter"
                         }
                     }
                 ],
@@ -294,36 +197,6 @@
         }
     },
     "definitions": {
-        "UserFriend": {
-            "properties": {
-                "friend_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "UserInfo": {
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "cover": {
-                    "type": "string"
-                }
-            }
-        },
-        "FriendsList": {
-            "properties": {
-                "list": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/UserInfo"
-                    }
-                }
-            }
-        },
         "UserAuth": {
             "required": [
                 "email",
@@ -366,13 +239,6 @@
                 }
             }
         },
-        "UserToFind": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
         "UserInfo": {
             "properties": {
                 "id": {
@@ -380,6 +246,12 @@
                 },
                 "name": {
                     "type": "string"
+                },
+                "sex": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
                 },
                 "cover": {
                     "type": "string"
@@ -393,6 +265,16 @@
                     "items": {
                         "$ref": "#/definitions/UserInfo"
                     }
+                }
+            }
+        },
+        "filter": {
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "sex": {
+                    "type": "string"
                 }
             }
         },

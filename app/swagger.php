@@ -1,5 +1,5 @@
 <?php
-
+die(var_dump(SWAGGER_API_BASEPATH));
 /**
  * @SWG\Swagger(
  *   @SWG\Info(
@@ -8,7 +8,7 @@
  *     description="Api Docs",
  *   ),
  *   schemes={"http"},
- *   basePath=SWAGGER_API_BASEPATH,
+ *   basePath="/api",
  *   consumes={"application/json"},
  *   produces={"application/json"},
  *   @SWG\SecurityScheme(securityDefinition="basic", type="basic")

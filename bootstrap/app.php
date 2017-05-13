@@ -16,6 +16,7 @@ if(!defined('SWAGGER_API_VERSION')) {
 if(!defined('SWAGGER_API_BASEPATH')){
     define("SWAGGER_API_BASEPATH", '/api');
 }
+
 if(!defined('SWAGGER_API_TITLE')){
     define("SWAGGER_API_TITLE", env('API_TITLE', 'Together Api Doc'));
 }

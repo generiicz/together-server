@@ -23,15 +23,18 @@ Route::post('/find', 'Api\UserController@findByNameAction');
 Route::group(['middleware' => 'api_auth', 'prefix' => 'user'], function () {
     Route::get('/', 'Api\UserController@index');
     Route::post('/', 'Api\UserController@update');
-
-    Route::get('/post', 'Api\PostController@one');
-    Route::post('/post/{id}', 'Api\PostController@update');
-    Route::post('/post/create', 'Api\PostController@create');
-    Route::get('/post/all', 'Api\PostController@index');
+    Route::post('/filter', 'Api\UserController@filterAction');
+});
+Route::group(['middleware' => 'api_auth', 'prefix' => 'post'], function () {
+    Route::get('/get', 'Api\PostController@index');
+    Route::get('/get/{id}', 'Api\PostController@one');
+    Route::post('/create', 'Api\PostController@create');
+    Route::post('/update/{id}', 'Api\PostController@update');
     Route::get('/categories', 'Api\PostController@categories');
 });
 
 Route::group(['middleware' => 'api_auth', 'prefix' => 'friend'],function(){
+    Route::get('/list','Api\FriendController@friendsListAction');
     Route::post('/add','Api\FriendController@addFriendAction');
     Route::post('/remove','Api\FriendController@removeFriendAction');
 });
